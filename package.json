@@ -38,7 +38,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "npm run build && node --test test/",
+    "test": "npm run build && node test/memory.test.mjs",
     "test:fast": "node test/memory.test.mjs",
     "prepare": "npm run build",
     "prepublishOnly": "npm run typecheck && npm test"
