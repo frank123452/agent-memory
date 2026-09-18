@@ -1,8 +1,11 @@
 /**
  * agent-memory — dependency-free long-term memory for LLM agents.
  *
+ * Published as `@frank123452/agent-memory`. The unscoped `agent-memory` name on
+ * npm is held by an unrelated empty package.
+ *
  * ```ts
- * import { AgentMemory, FileStorage } from "agent-memory";
+ * import { AgentMemory, FileStorage } from "@frank123452/agent-memory";
  *
  * const memory = new AgentMemory({
  *   scope: "user-42",

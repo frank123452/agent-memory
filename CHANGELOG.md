@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   implementations.
 - `MemoryLabels` for emitting prompts in any language.
 - `DEFAULT_EVENT_RULES` and `DEFAULT_SYNONYMS` presets.
-- 44 tests covering the public API, compression, persistence, malformed
+- 46 tests covering the public API, compression, persistence, malformed
   persisted documents and failing storage.
 
 [Unreleased]: https://github.com/frank123452/agent-memory/compare/v0.1.0...HEAD

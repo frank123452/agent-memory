@@ -16,7 +16,7 @@ It ships as four small primitives you can use together or separately:
 - a **compressor** that fits long conversations into a context window without the model forgetting they happened
 
 ```ts
-import { AgentMemory, FileStorage } from "agent-memory";
+import { AgentMemory, FileStorage } from "@frank123452/agent-memory";
 
 const memory = new AgentMemory({
   scope: "user-42",
@@ -50,10 +50,16 @@ What worked was a hybrid: keep the newest turns verbatim, retrieve older ones le
 ## Install
 
 ```bash
-npm install agent-memory
+# From GitHub — works today
+npm install github:frank123452/agent-memory
 ```
 
-Requires Node 18+. No runtime dependencies. Ships as ESM with full type declarations.
+> The unscoped name `agent-memory` on npm is registered by an unrelated,
+> empty package. This library is published under a scope:
+> `@frank123452/agent-memory`. The `prepare` script builds `dist/` on install,
+> so a git install works without a published tarball.
+
+Requires Node 18.17+. No runtime dependencies. Ships as ESM with full type declarations.
 
 ---
 
@@ -105,7 +111,7 @@ const memory = new AgentMemory({
 A small deterministic ruleset is often better than an LLM classifier, especially on a safety-relevant path: an LLM will occasionally invent a crisis that never happened, and a rule will not.
 
 ```ts
-import { DEFAULT_EVENT_RULES } from "agent-memory";
+import { DEFAULT_EVENT_RULES } from "@frank123452/agent-memory";
 
 const memory = new AgentMemory({
   scope: "user-42",
@@ -225,7 +231,7 @@ clear()
 ### Standalone primitives
 
 ```ts
-import { tokenize, Bm25Index, RecallIndex, MemoryStorage, FileStorage } from "agent-memory";
+import { tokenize, Bm25Index, RecallIndex, MemoryStorage, FileStorage } from "@frank123452/agent-memory";
 ```
 
 `RecallIndex` is a convenience wrapper around `Bm25Index` that tokenizes for you and maintains an incremental document set.
