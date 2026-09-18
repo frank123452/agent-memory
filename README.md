@@ -170,6 +170,8 @@ new AgentMemory({
 
 **Truncation always announces itself.** When history is compressed, a system message states how many turns were omitted, even when retrieval found nothing relevant. Without it the model asserts that the user never mentioned something — the single most damaging and most easily avoided memory failure.
 
+**Memory confusion is a missing arbiter, not a missing layer.** A system with four tiers of memory still contradicts itself if all four are injected with equal authority: the model receives "lives in Berlin" and "lives in Lisbon" and has to guess. The fix is ranking, not another tier. This library therefore makes every entry state its own status — slots and pinned entries are current by construction, notes carry the date they were recorded, and the block says which is which. Adding a fifth layer would not have helped.
+
 **Events are rules, not a classifier.** On a path that can feed a crisis-escalation workflow, a false positive is worse than a false negative. Rules are auditable, testable and free. Bring your own via `events`.
 
 **Storage is two methods.** `read` and `write`. Back it with Redis, Postgres or S3 without touching library code. `FileStorage` is included for single-box deployments and is safe under concurrency (writes per key are serialized).
@@ -192,6 +194,7 @@ new AgentMemory({
 | `entryTtlDays` | `15` | Drop non-pinned entries after this |
 | `injectWindowDays` | `30` | Stop injecting non-pinned entries after this |
 | `maxInjected` | `35` | Max entries placed in the prompt |
+| `includeEntryTimestamps` | `true` | Date non-pinned notes so stale ones are distinguishable |
 | `recallTopK` | `6` | Retrieval depth |
 | `maxArchivedRounds` | `200` | Archived rounds kept for retrieval |
 | `events` | `[]` | Event rules |

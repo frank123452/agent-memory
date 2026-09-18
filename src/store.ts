@@ -18,6 +18,8 @@ import type {
 
 export const DEFAULT_LABELS: MemoryLabels = {
   factsHeader: "What you know about this person",
+  factsGuidance:
+    'Entries under "Always relevant" are current. Dated notes are observations from the date shown and may be outdated.',
   pinnedHeader: "Always relevant",
   notesHeader: "Remembered details",
   eventsHeader: "Recent things they told you about how they felt",
@@ -119,6 +121,7 @@ export class AgentMemory {
   private readonly entryTtlDays: number;
   private readonly injectWindowDays: number;
   private readonly maxInjected: number;
+  private readonly includeEntryTimestamps: boolean;
   private readonly recallTopK: number;
   private readonly maxArchivedRounds: number;
   private readonly rules: AgentMemoryOptions["events"];
@@ -149,6 +152,7 @@ export class AgentMemory {
     this.entryTtlDays = options.entryTtlDays ?? 15;
     this.injectWindowDays = options.injectWindowDays ?? 30;
     this.maxInjected = options.maxInjected ?? 35;
+    this.includeEntryTimestamps = options.includeEntryTimestamps ?? true;
     this.recallTopK = options.recallTopK ?? 6;
     this.maxArchivedRounds =
       options.maxArchivedRounds ?? DEFAULT_MAX_ARCHIVED_ROUNDS;
@@ -611,9 +615,19 @@ export class AgentMemory {
     return [...pinned, ...normal.slice(-room)];
   }
 
-  /** Renders an entry, prefixing the slot key so "Lisbon" reads as "location: Lisbon". */
-  private renderEntry(entry: MemoryEntry): string {
-    return entry.slot ? `${entry.slot}: ${entry.text}` : entry.text;
+  /**
+   * Renders one entry.
+   *
+   * A slot is prefixed with its key so "Lisbon" reads as "location: Lisbon".
+   * Notes carry the date they were recorded; pinned entries do not, because a
+   * pinned entry asserts something that is currently true rather than an
+   * observation made on a particular day.
+   */
+  private renderEntry(entry: MemoryEntry, withDate: boolean): string {
+    const body = entry.slot ? `${entry.slot}: ${entry.text}` : entry.text;
+    if (!withDate || !this.includeEntryTimestamps || !entry.createdAt) return body;
+    const date = entry.createdAt.slice(0, 10);
+    return date ? `[${date}] ${body}` : body;
   }
 
   /** Builds the memory block injected into the system prompt. */
@@ -629,12 +643,13 @@ export class AgentMemory {
       const lines: string[] = [this.labels.factsHeader];
       if (pinned.length > 0) {
         lines.push(`${this.labels.pinnedHeader}:`);
-        for (const entry of pinned) lines.push(`- ${this.renderEntry(entry)}`);
+        for (const entry of pinned) lines.push(`- ${this.renderEntry(entry, false)}`);
       }
       if (notes.length > 0) {
         lines.push(`${this.labels.notesHeader}:`);
-        for (const entry of notes) lines.push(`- ${this.renderEntry(entry)}`);
+        for (const entry of notes) lines.push(`- ${this.renderEntry(entry, true)}`);
       }
+      if (this.labels.factsGuidance) lines.push(this.labels.factsGuidance);
       sections.push(lines.join("\n"));
     }
 

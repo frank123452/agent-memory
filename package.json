@@ -1,6 +1,6 @@
 {
   "name": "@frank123452/agent-memory",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Dependency-free long-term memory, retrieval and history compression for LLM agents. First-class CJK support and zero-embedding BM25 recall.",
   "keywords": [
     "llm",

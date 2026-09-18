@@ -97,6 +97,12 @@ export interface RetrievedRound {
  */
 export interface MemoryLabels {
   factsHeader: string;
+  /**
+   * Stated once in the memory block to establish precedence between the
+   * sections. Without it the model sees several layers of memory with equal
+   * authority and has to guess which one wins when they disagree.
+   */
+  factsGuidance: string;
   pinnedHeader: string;
   notesHeader: string;
   eventsHeader: string;
@@ -129,6 +135,16 @@ export interface AgentMemoryOptions {
 
   /** Maximum entries injected into the prompt. Default 35. */
   maxInjected?: number;
+
+  /**
+   * Prefix non-pinned notes with the date they were recorded. Default true.
+   *
+   * Without a date, a note from three weeks ago and one from this morning are
+   * indistinguishable once they reach the model, so it cannot tell a stale
+   * observation from a current one. Pinned entries and slots are deliberately
+   * never dated: they are asserted to be current by construction.
+   */
+  includeEntryTimestamps?: boolean;
 
   /** Pinned entries are capped separately so they cannot crowd out everything. Default 30. */
   maxPinned?: number;

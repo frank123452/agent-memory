@@ -135,7 +135,44 @@ describe("AgentMemory — memory block", () => {
     assert.match(block, /Always relevant:/);
     assert.match(block, /- Name is Alex/);
     assert.match(block, /Remembered details:/);
+    // Notes carry the date they were recorded, so a stale observation is
+    // distinguishable from a current one once it reaches the model.
+    assert.match(block, /- \[\d{4}-\d{2}-\d{2}\] Mentioned liking rainy days/);
+    // Pinned entries assert something currently true and must not be dated.
+    assert.doesNotMatch(block, /\[\d{4}-\d{2}-\d{2}\] Name is Alex/);
+  });
+
+  it("states the precedence rule between memory sections", async () => {
+    const memory = new AgentMemory({ scope: "t9", storage: new MemoryStorage() });
+    await memory.remember("Name is Alex", { pinned: true });
+    const block = await memory.formatMemoryBlock();
+    // Without an explicit ordering the model receives several layers with equal
+    // authority and has to guess which wins when they disagree.
+    assert.match(block, /Dated notes are observations/);
+  });
+
+  it("can omit note timestamps", async () => {
+    const memory = new AgentMemory({
+      scope: "t10",
+      storage: new MemoryStorage(),
+      includeEntryTimestamps: false,
+    });
+    await memory.remember("Mentioned liking rainy days");
+    const block = await memory.formatMemoryBlock();
     assert.match(block, /- Mentioned liking rainy days/);
+    assert.doesNotMatch(block, /\[\d{4}-\d{2}-\d{2}\]/);
+  });
+
+  it("lets the precedence guidance be replaced or removed", async () => {
+    const memory = new AgentMemory({
+      scope: "t11",
+      storage: new MemoryStorage(),
+      labels: { factsGuidance: "" },
+    });
+    await memory.remember("Name is Alex", { pinned: true });
+    const block = await memory.formatMemoryBlock();
+    assert.doesNotMatch(block, /Dated notes are observations/);
+    assert.match(block, /- Name is Alex/);
   });
 
   it("honours custom labels so the block can be emitted in another language", async () => {
