@@ -1,0 +1,58 @@
+{
+  "name": "agent-memory",
+  "version": "0.1.0",
+  "description": "Dependency-free long-term memory, retrieval and history compression for LLM agents. First-class CJK support and zero-embedding BM25 recall.",
+  "keywords": [
+    "llm",
+    "agent",
+    "memory",
+    "long-term-memory",
+    "rag",
+    "bm25",
+    "chatbot",
+    "conversational-ai",
+    "cjk",
+    "chinese",
+    "japanese",
+    "korean"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18.17.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test test/",
+    "test:fast": "node test/memory.test.mjs",
+    "prepublishOnly": "npm run typecheck && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frank123452/agent-memory.git"
+  },
+  "bugs": {
+    "url": "https://github.com/frank123452/agent-memory/issues"
+  },
+  "homepage": "https://github.com/frank123452/agent-memory#readme",
+  "author": "frank123452",
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  },
+  "dependencies": {}
+}
