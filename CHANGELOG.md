@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1]
+
+### Fixed
+
+- **The build failed for anyone installing from git.** `@types/node` was never
+  declared as a devDependency. It resolved locally only because TypeScript walks
+  up the directory tree and found `@types/node` hoisted into a parent project's
+  `node_modules`; in a clean install there is no ancestor to borrow from, so
+  `node:fs`, `node:path`, `structuredClone` and `globalThis.crypto` all failed to
+  type-check and the `prepare` script aborted the install.
+- `typeRoots` is now pinned to `./node_modules/@types` and `types` to `["node"]`,
+  so the build can no longer silently depend on an ancestor directory again.
+
 ## [0.1.0]
 
 ### Added
@@ -28,5 +41,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 46 tests covering the public API, compression, persistence, malformed
   persisted documents and failing storage.
 
-[Unreleased]: https://github.com/frank123452/agent-memory/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/frank123452/agent-memory/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/frank123452/agent-memory/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/frank123452/agent-memory/releases/tag/v0.1.0
